@@ -1,21 +1,26 @@
 package br.com.pague.desafio.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ProdutoRepository;
@@ -30,50 +35,62 @@ public class ProdutoController {
 	@GetMapping
 	@Cacheable(value = "listaProdutos")
 	public List<Produto> listar(@RequestParam(required = false) String nome) {
-//		if (nome == null) {
-//			List<Produto> topicos = produtoRepository.findAll();
-//			return topicos;
-//		} else {
-//			List<Produto> topicos = produtoRepository.findByNome(nome);
-//			return topicos;
-//		}
-		
-		List<Produto> listaProdutos = new ArrayList<Produto>();
-		Produto p = new Produto(null, "Bala", BigDecimal.TEN);
-		listaProdutos.add(p);
-		p = new Produto(null, "Bala 2", BigDecimal.TEN);
-		listaProdutos.add(p);
-		p = new Produto(null,  "Bala 3", BigDecimal.TEN);
-		listaProdutos.add(p);
-		
-		return listaProdutos;
-		
+		List<Produto> produtos = null;
+		if (nome == null) {
+			produtos = produtoRepository.findAll();
+		} else {
+			produtos = produtoRepository.findByNome(nome);
+		}
+		return produtos;
 	}
 	
 	@PostMapping
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
-	public void cadastrar() {
-		
+	public ResponseEntity<Produto> cadastrar(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder) {
+		produtoRepository.save(produto);
+		URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produto.getId()).toUri();
+		return ResponseEntity.created(uri).body(produto);
 	}
 	
-	@PutMapping
+	@PutMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
-	public void atualizar() {
+	public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody @Valid Produto form) {
+		Optional<Produto> optional = produtoRepository.findById(id);
+		if (optional.isPresent()) {
+			Produto produto = optional.get();
+			
+			produto.setNome(form.getNome());
+			produto.setPrecoSugerido(form.getPrecoSugerido());
+			
+			return ResponseEntity.ok(produto);
+		}
 		
+		return ResponseEntity.notFound().build();
 	}
 	
 	@GetMapping("/{id}")
 	@Cacheable(value = "listaProdutos")
-	public void obter() {
+	public ResponseEntity<Produto> obter(@PathVariable Long id) {
+		Optional<Produto> produto = produtoRepository.findById(id);
+		if (produto.isPresent()) {
+			return ResponseEntity.ok(produto.get());
+		}
 		
+		return ResponseEntity.notFound().build();
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
-	public void remover() {
-			
+	public ResponseEntity<Produto> remover(@PathVariable Long id) {
+		Optional<Produto> optional = produtoRepository.findById(id);
+		if (optional.isPresent()) {
+			produtoRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 }

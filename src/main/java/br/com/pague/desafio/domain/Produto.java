@@ -7,13 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Produto {
@@ -22,9 +25,11 @@ public class Produto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "nome", length = 100, nullable = false)
+	@NotNull @NotEmpty @Length(min=5, max=100)
+	@Column(length = 100, nullable = false)
 	private String nome;
 	
-	@Column(name = "preco_sugerido", precision = 5, scale = 2)
+	@NotNull @Min(value = 0)
+	@Column(precision = 10, scale = 2)
 	private BigDecimal precoSugerido;
 }

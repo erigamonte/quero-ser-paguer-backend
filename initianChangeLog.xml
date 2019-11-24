@@ -1,0 +1,153 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< br.com.pague:desafio >------------------------
+[INFO] Building desafio 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- liquibase-maven-plugin:3.4.1:generateChangeLog (default-cli) @ desafio ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Parsing Liquibase Properties File
+[INFO]   File: src/main/resources/liquibase.properties
+[INFO]   'referenceUrl' in properties file is not being used by this task.
+[INFO] ------------------------------------------------------------------------
+[INFO] Executing on Database: jdbc:mysql://localhost:3306/desafio_db?useTimezone=true&serverTimezone=America/Sao_Paulo
+[INFO] Generating Change Log from database root@localhost @ jdbc:mysql://localhost:3306/desafio_db?useTimezone=true&serverTimezone=America/Sao_Paulo (Default Schema: desafio_db)
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="Rigamonte (generated)" id="1574627877834-1">
+        <createTable tableName="cliente">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="cpf" type="VARCHAR(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dataNascimento" type="date"/>
+            <column name="nome" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-2">
+        <createTable tableName="itempedido">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="preco" type="DECIMAL(10, 2)"/>
+            <column name="quantidade" type="DECIMAL(10, 2)"/>
+            <column name="pedido_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="produto_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-3">
+        <createTable tableName="pedido">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="valorPedido" type="DECIMAL(10, 2)"/>
+            <column name="cliente_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-4">
+        <createTable tableName="perfil">
+            <column name="nome" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-5">
+        <createTable tableName="produto">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="nome" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="precoSugerido" type="DECIMAL(10, 2)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-6">
+        <createTable tableName="usuario">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="senha" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-7">
+        <createTable tableName="usuario_perfil">
+            <column name="Usuario_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="perfis_nome" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-8">
+        <addPrimaryKey columnNames="nome" constraintName="PRIMARY" tableName="perfil"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-9">
+        <addUniqueConstraint columnNames="cpf" constraintName="UC_CLIENTECPF_COL" tableName="cliente"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-10">
+        <createIndex indexName="FK_15heuj2673oqs04jhph3u81nu" tableName="usuario_perfil">
+            <column name="perfis_nome"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-11">
+        <createIndex indexName="FK_349crysjyuw86eh4sowabhe9b" tableName="itempedido">
+            <column name="pedido_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-12">
+        <createIndex indexName="FK_56sj59crb17s1hbh8nqhmweh2" tableName="usuario_perfil">
+            <column name="Usuario_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-13">
+        <createIndex indexName="FK_i80dvqn70vynco7witrj7nft" tableName="itempedido">
+            <column name="produto_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-14">
+        <createIndex indexName="FK_nmx283i28kpfbnjwln34xu8lm" tableName="pedido">
+            <column name="cliente_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-15">
+        <addForeignKeyConstraint baseColumnNames="perfis_nome" baseTableName="usuario_perfil" constraintName="FK_15heuj2673oqs04jhph3u81nu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="nome" referencedTableName="perfil"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-16">
+        <addForeignKeyConstraint baseColumnNames="pedido_id" baseTableName="itempedido" constraintName="FK_349crysjyuw86eh4sowabhe9b" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="pedido"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-17">
+        <addForeignKeyConstraint baseColumnNames="Usuario_id" baseTableName="usuario_perfil" constraintName="FK_56sj59crb17s1hbh8nqhmweh2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="usuario"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-18">
+        <addForeignKeyConstraint baseColumnNames="produto_id" baseTableName="itempedido" constraintName="FK_i80dvqn70vynco7witrj7nft" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="produto"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574627877834-19">
+        <addForeignKeyConstraint baseColumnNames="cliente_id" baseTableName="pedido" constraintName="FK_nmx283i28kpfbnjwln34xu8lm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cliente"/>
+    </changeSet>
+</databaseChangeLog>
+[INFO] Output written to Change Log file, null
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.683 s
+[INFO] Finished at: 2019-11-24T18:38:00-02:00
+[INFO] ------------------------------------------------------------------------

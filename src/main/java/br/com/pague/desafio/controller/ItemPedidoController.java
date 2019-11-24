@@ -24,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.pague.desafio.controller.dto.ItemPedidoDTO;
 import br.com.pague.desafio.controller.mapper.ItemPedidoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
+import br.com.pague.desafio.domain.Cliente;
 import br.com.pague.desafio.domain.ItemPedido;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
@@ -64,11 +65,10 @@ public class ItemPedidoController {
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ItemPedidoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ItemPedidoDTO form) {
+	public ResponseEntity<ItemPedidoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ItemPedidoDTO itemPedidoDto) {
 		Optional<ItemPedido> optional = itemPedidoRepository.findById(id);
 		if (optional.isPresent()) {
-			ItemPedido itemPedido = optional.get();
-			itemPedido.setQuantidade(form.getQuantidade());
+			ItemPedido itemPedido = itemPedidoRepository.save(itemPedidoMapper.toEntity(itemPedidoDto));
 			return ResponseEntity.ok(itemPedidoMapper.toDto(itemPedido));
 		}
 		

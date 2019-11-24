@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="Rigamonte (generated)" id="1574628092974-1">
+        <createTable tableName="Cliente">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ClientePK"/>
+            </column>
+            <column name="cpf" type="VARCHAR(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dataNascimento" type="date"/>
+            <column name="nome" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-2">
+        <createTable tableName="ItemPedido">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ItemPedidoPK"/>
+            </column>
+            <column name="preco" type="DECIMAL(10, 2)"/>
+            <column name="quantidade" type="DECIMAL(10, 2)"/>
+            <column name="pedido_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="produto_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-3">
+        <createTable tableName="Pedido">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PedidoPK"/>
+            </column>
+            <column name="valorPedido" type="DECIMAL(10, 2)"/>
+            <column name="cliente_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-4">
+        <createTable tableName="Perfil">
+            <column name="nome" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <loadData encoding="UTF-8"
+			file="db/perfils.csv" separator=";" tableName="Perfil">
+		</loadData>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-5">
+        <createTable tableName="Produto">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="ProdutoPK"/>
+            </column>
+            <column name="nome" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="precoSugerido" type="DECIMAL(10, 2)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-6">
+        <createTable tableName="Usuario">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="UsuarioPK"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="senha" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <loadData encoding="UTF-8"
+			file="db/usuarios.csv" separator=";" tableName="usuario">
+		</loadData>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-7">
+        <createTable tableName="Usuario_Perfil">
+            <column name="Usuario_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="perfis_nome" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <loadData encoding="UTF-8"
+			file="db/usuarios_perfis.csv" separator=";" tableName="Usuario_Perfil">
+		</loadData>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-8">
+        <addPrimaryKey columnNames="nome" constraintName="PerfilPK" tableName="Perfil"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-9">
+        <addUniqueConstraint columnNames="cpf" constraintName="UC_CLIENTECPF_COL" tableName="Cliente"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-10">
+        <addForeignKeyConstraint baseColumnNames="perfis_nome" baseTableName="Usuario_Perfil" constraintName="FK_15heuj2673oqs04jhph3u81nu" deferrable="false" initiallyDeferred="false" referencedColumnNames="nome" referencedTableName="Perfil"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-11">
+        <addForeignKeyConstraint baseColumnNames="pedido_id" baseTableName="ItemPedido" constraintName="FK_349crysjyuw86eh4sowabhe9b" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="Pedido"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-12">
+        <addForeignKeyConstraint baseColumnNames="Usuario_id" baseTableName="Usuario_Perfil" constraintName="FK_56sj59crb17s1hbh8nqhmweh2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="Usuario"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-13">
+        <addForeignKeyConstraint baseColumnNames="produto_id" baseTableName="ItemPedido" constraintName="FK_i80dvqn70vynco7witrj7nft" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="Produto"/>
+    </changeSet>
+    <changeSet author="Rigamonte (generated)" id="1574628092974-14">
+        <addForeignKeyConstraint baseColumnNames="cliente_id" baseTableName="Pedido" constraintName="FK_nmx283i28kpfbnjwln34xu8lm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="Cliente"/>
+    </changeSet>
+        
+</databaseChangeLog>

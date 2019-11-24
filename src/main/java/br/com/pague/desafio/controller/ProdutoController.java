@@ -26,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.pague.desafio.controller.dto.ProdutoDTO;
 import br.com.pague.desafio.controller.mapper.ProdutoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
+import br.com.pague.desafio.domain.Cliente;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
 import br.com.pague.desafio.repository.ProdutoRepository;
@@ -79,11 +80,7 @@ public class ProdutoController {
 	public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produtoDto) {
 		Optional<Produto> optional = produtoRepository.findById(id);
 		if (optional.isPresent()) {
-			Produto produto = optional.get();
-			
-			produto.setNome(produtoDto.getNome());
-			produto.setPrecoSugerido(produtoDto.getPrecoSugerido());
-			
+			Produto produto = produtoRepository.save(produtoMapper.toEntity(produtoDto));
 			return ResponseEntity.ok(produtoMapper.toDto(produto));
 		}
 		

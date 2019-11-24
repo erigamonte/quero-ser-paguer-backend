@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,67 +21,90 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.pague.desafio.controller.dto.PedidoDTO;
+import br.com.pague.desafio.controller.mapper.PedidoMapper;
+import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.domain.Pedido;
+import br.com.pague.desafio.repository.ClienteRepository;
 import br.com.pague.desafio.repository.PedidoRepository;
+import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/pedidos")
+@Api(tags = "Pedidos")
 public class PedidoController {
 	
 	@Autowired
 	private PedidoRepository pedidoRepository;
+
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private PedidoMapper pedidoMapper;
+	
+	private HttpHeaders httpPedidoNaoEncontrado = HeaderUtil.createFailureAlert("PEDIDO", "PEDIDO_NAO_ENCONTRADO", "Pedido não encontrado");
+	
+	private HttpHeaders httpClienteNaoEncontrado = HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado");
 	
 	@GetMapping
-	public List<Pedido> listar(@RequestParam(required = false) Long clienteId) {
+	public List<PedidoDTO> listar(@RequestParam(required = false) Long clienteId) {
 		List<Pedido> pedidos = null;
 		if (clienteId == null) {
 			pedidos = pedidoRepository.findAll();
 		} else {
 			pedidos = pedidoRepository.findAllByClienteId(clienteId);
 		}
-		return pedidos;
+		
+		return pedidoMapper.toDto(pedidos);
 	}
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<Pedido> cadastrar(@RequestBody @Valid Pedido pedido, UriComponentsBuilder uriBuilder) {
-		pedidoRepository.save(pedido);
+	public ResponseEntity<PedidoDTO> cadastrar(@RequestBody @Valid PedidoDTO pedidoDto, UriComponentsBuilder uriBuilder) {
+		Pedido pedido = pedidoMapper.toEntity(pedidoDto);
+		pedido = pedidoRepository.save(pedido);
 		URI uri = uriBuilder.path("/pedidos/{id}").buildAndExpand(pedido.getId()).toUri();
-		return ResponseEntity.created(uri).body(pedido);
+		return ResponseEntity.created(uri).body(pedidoMapper.toDto(pedido));
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<Pedido> atualizar(@PathVariable Long id, @RequestBody @Valid Pedido form) {
+	public ResponseEntity<PedidoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid PedidoDTO pedidoDto) {
 		Optional<Pedido> optional = pedidoRepository.findById(id);
 		if (optional.isPresent()) {
 			Pedido pedido = optional.get();
-			
-			return ResponseEntity.ok(pedido);
+			return ResponseEntity.ok(pedidoMapper.toDto(pedido));
 		}
 		
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.notFound()
+				.headers(httpPedidoNaoEncontrado)
+				.build();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Pedido> obter(@PathVariable Long id) {
+	public ResponseEntity<PedidoDTO> obter(@PathVariable Long id) {
 		Optional<Pedido> pedido = pedidoRepository.findById(id);
 		if (pedido.isPresent()) {
-			return ResponseEntity.ok(pedido.get());
+			return ResponseEntity.ok(pedidoMapper.toDto(pedido.get()));
 		}
 		
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.notFound()
+				.headers(httpPedidoNaoEncontrado)
+				.build();
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<Pedido> remover(@PathVariable Long id) {
+	public ResponseEntity<PedidoDTO> remover(@PathVariable Long id) {
 		Optional<Pedido> optional = pedidoRepository.findById(id);
 		if (optional.isPresent()) {
 			pedidoRepository.deleteById(id);
 			return ResponseEntity.ok().build();
 		}
 		
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.notFound()
+				.headers(httpPedidoNaoEncontrado)
+				.build();
 	}
 }

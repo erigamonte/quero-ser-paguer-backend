@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pague.desafio.config.security.TokenService;
-import br.com.pague.desafio.controller.dto.TokenDto;
-import br.com.pague.desafio.controller.form.LoginForm;
+import br.com.pague.desafio.config.security.dto.TokenDTO;
+import br.com.pague.desafio.config.security.form.LoginForm;
+import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/auth")
+@Api(tags = "Autenticação")
 public class AutenticacaoController {
 	
 	@Autowired
@@ -28,13 +30,13 @@ public class AutenticacaoController {
 	private TokenService tokenService;
 
 	@PostMapping
-	public ResponseEntity<TokenDto> autenticar(@RequestBody @Valid LoginForm form) {
+	public ResponseEntity<TokenDTO> autenticar(@RequestBody @Valid LoginForm form) {
 		UsernamePasswordAuthenticationToken dadosLogin = form.converter();
 		
 		try {
 			Authentication authentication = authManager.authenticate(dadosLogin);
 			String token = tokenService.gerarToken(authentication);
-			return ResponseEntity.ok(new TokenDto(token, "Bearer"));
+			return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}

@@ -10,4 +10,6 @@ public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long>{
 
 	List<ItemPedido> findAllByPedidoId(Long pedidoId);
 
+	boolean existsByProdutoId(Long produtoId);
+
 }

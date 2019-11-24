@@ -10,4 +10,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
 	List<Pedido> findAllByClienteId(Long clienteId);
 
+	boolean existsByClienteId(Long clienteId);
+
 }

@@ -1,4 +1,4 @@
-package br.com.pague.desafio.controller.form;
+package br.com.pague.desafio.config.security.form;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

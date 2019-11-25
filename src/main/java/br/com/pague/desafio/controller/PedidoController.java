@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,6 @@ import br.com.pague.desafio.controller.dto.PedidoDTO;
 import br.com.pague.desafio.controller.mapper.PedidoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.domain.Pedido;
-import br.com.pague.desafio.repository.ClienteRepository;
 import br.com.pague.desafio.repository.PedidoRepository;
 import io.swagger.annotations.Api;
 
@@ -38,14 +36,7 @@ public class PedidoController {
 	private PedidoRepository pedidoRepository;
 
 	@Autowired
-	private ClienteRepository clienteRepository;
-	
-	@Autowired
 	private PedidoMapper pedidoMapper;
-	
-	private HttpHeaders httpPedidoNaoEncontrado = HeaderUtil.createFailureAlert("PEDIDO", "PEDIDO_NAO_ENCONTRADO", "Pedido não encontrado");
-	
-	private HttpHeaders httpClienteNaoEncontrado = HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado");
 	
 	@GetMapping
 	public List<PedidoDTO> listar(@RequestParam(required = false) Long clienteId) {
@@ -78,7 +69,7 @@ public class PedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpPedidoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PEDIDO", "PEDIDO_NAO_ENCONTRADO", "Pedido não encontrado"))
 				.build();
 	}
 	
@@ -90,7 +81,7 @@ public class PedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpPedidoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PEDIDO", "PEDIDO_NAO_ENCONTRADO", "Pedido não encontrado"))
 				.build();
 	}
 	
@@ -104,7 +95,7 @@ public class PedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpPedidoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PEDIDO", "PEDIDO_NAO_ENCONTRADO", "Pedido não encontrado"))
 				.build();
 	}
 }

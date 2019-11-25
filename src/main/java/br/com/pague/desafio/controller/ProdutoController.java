@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.pague.desafio.controller.dto.ProdutoDTO;
 import br.com.pague.desafio.controller.mapper.ProdutoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
-import br.com.pague.desafio.domain.Cliente;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
 import br.com.pague.desafio.repository.ProdutoRepository;
@@ -45,10 +43,6 @@ public class ProdutoController {
 	
 	@Autowired
 	private ProdutoMapper produtoMapper;
-	
-	private HttpHeaders httpProdutoNaoEncontrado = HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado");
-	
-	private HttpHeaders httpProdutoPossuiPedido = HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_POSSUI_PEDIDO", "Produto não pode ser removido, pois possui pedidos efetuados");
 	
 	@GetMapping
 	@Cacheable(value = "listaProdutos")
@@ -85,7 +79,7 @@ public class ProdutoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpProdutoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado"))
 				.build();
 	}
 	
@@ -98,7 +92,7 @@ public class ProdutoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpProdutoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado"))
 				.build();
 	}
 	
@@ -113,7 +107,7 @@ public class ProdutoController {
 			
 			if(produtoPossuiPedido) {
 				return ResponseEntity.badRequest()
-						.headers(httpProdutoPossuiPedido)
+						.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_POSSUI_PEDIDO", "Produto não pode ser removido, pois possui pedidos efetuados"))
 						.build();
 			}
 			
@@ -122,7 +116,7 @@ public class ProdutoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpProdutoNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado"))
 				.build();
 	}
 }

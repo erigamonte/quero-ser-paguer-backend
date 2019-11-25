@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,12 +42,6 @@ public class ClienteController {
 	@Autowired
 	private ClienteMapper clienteMapper;
 	
-	private HttpHeaders httpClienteNaoEncontrado = HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado");
-
-	private HttpHeaders httpCpfJaUtilizado = HeaderUtil.createFailureAlert("CLIENTE", "CPF_DUPLICADO", "CPF já utilizado por outro cliente");
-
-	private HttpHeaders httpClientePossuiPedido = HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_POSSUI_PEDIDO", "Cliente não pode ser removido, pois possui pedidos efetuados");
-	
 	@GetMapping
 	public List<ClienteDTO> listar(@RequestParam(required = false) String nome) {
 		List<Cliente> clientes = null;
@@ -72,7 +65,7 @@ public class ClienteController {
 		}
 		
 		return ResponseEntity.badRequest()
-				.headers(httpCpfJaUtilizado)
+				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CPF_DUPLICADO", "CPF já utilizado por outro cliente"))
 				.body(clienteDto);
 	}
 	
@@ -86,7 +79,7 @@ public class ClienteController {
 				Optional<Cliente> optionalClienteCpf = clienteRepository.findByCpf(clienteDto.getCpf());
 				if(optionalClienteCpf.isPresent()) {
 					return ResponseEntity.badRequest()
-							.headers(httpCpfJaUtilizado)
+							.headers(HeaderUtil.createFailureAlert("CLIENTE", "CPF_DUPLICADO", "CPF já utilizado por outro cliente"))
 							.body(clienteDto);
 				}
 			}
@@ -96,7 +89,7 @@ public class ClienteController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpClienteNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado"))
 				.build();
 	}
 	
@@ -108,7 +101,7 @@ public class ClienteController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpClienteNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado"))
 				.build();
 	}
 	
@@ -122,7 +115,7 @@ public class ClienteController {
 			
 			if(clientePossuiPedido) {
 				return ResponseEntity.badRequest()
-						.headers(httpClientePossuiPedido)
+						.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_POSSUI_PEDIDO", "Cliente não pode ser removido, pois possui pedidos efetuados"))
 						.build();
 			}
 
@@ -131,7 +124,7 @@ public class ClienteController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpClienteNaoEncontrado)
+				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado"))
 				.build();
 	}
 }

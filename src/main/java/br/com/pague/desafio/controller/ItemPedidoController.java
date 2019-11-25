@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.pague.desafio.controller.dto.ItemPedidoDTO;
 import br.com.pague.desafio.controller.mapper.ItemPedidoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
-import br.com.pague.desafio.domain.Cliente;
 import br.com.pague.desafio.domain.ItemPedido;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
@@ -44,8 +42,6 @@ public class ItemPedidoController {
 	
 	@Autowired
 	private ItemPedidoMapper itemPedidoMapper;
-	
-	private HttpHeaders httpItemNaopEncontrado = HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado");
 	
 	@GetMapping
 	public List<ItemPedidoDTO> listar(@RequestParam(required = true) Long pedidoId) {
@@ -73,7 +69,7 @@ public class ItemPedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpItemNaopEncontrado)
+				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
 				.build();
 	}
 	
@@ -85,7 +81,7 @@ public class ItemPedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpItemNaopEncontrado)
+				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
 				.build();
 	}
 	
@@ -99,7 +95,7 @@ public class ItemPedidoController {
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(httpItemNaopEncontrado)
+				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
 				.build();
 	}
 }

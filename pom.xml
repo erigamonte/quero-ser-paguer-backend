@@ -26,6 +26,24 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
    		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 	</properties>
+	
+	<profiles>
+	    <profile>
+	        <id>local</id>
+	        <activation>
+	            <activeByDefault>true</activeByDefault>
+	        </activation>
+	        <properties>
+	            <spring.profiles.active>local</spring.profiles.active>
+	        </properties>
+	    </profile>
+	    <profile>
+	        <id>docker</id>
+	        <properties>
+	            <spring.profiles.active>docker</spring.profiles.active>
+	        </properties>
+	    </profile>
+	</profiles>
 
 	<dependencies>
 	

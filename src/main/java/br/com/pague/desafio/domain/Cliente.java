@@ -24,13 +24,14 @@ public class Cliente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(length = 100, nullable = false)
+	@Column(name = "nome", length = 100, nullable = false)
 	private String nome;
 	
-	@Column(length = 11, nullable = false, unique = true)
+	@Column(name = "cpf", length = 11, nullable = false, unique = true)
 	private String cpf;
 	
 	@Temporal(TemporalType.DATE)
+	@Column(name = "data_nascimento")
 	private Date dataNascimento;
 	
 	@OneToMany(mappedBy = "cliente")

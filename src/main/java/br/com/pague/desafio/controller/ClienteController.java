@@ -2,7 +2,6 @@ package br.com.pague.desafio.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -20,12 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.pague.desafio.controller.dto.ClienteDTO;
-import br.com.pague.desafio.controller.mapper.ClienteMapper;
+import br.com.pague.desafio.controller.error.DesafioException;
 import br.com.pague.desafio.controller.util.HeaderUtil;
-import br.com.pague.desafio.domain.Cliente;
-import br.com.pague.desafio.repository.ClienteRepository;
-import br.com.pague.desafio.repository.PedidoRepository;
+import br.com.pague.desafio.service.ClienteService;
+import br.com.pague.desafio.service.dto.ClienteDTO;
 import io.swagger.annotations.Api;
 
 @RestController
@@ -34,70 +31,48 @@ import io.swagger.annotations.Api;
 public class ClienteController {
 	
 	@Autowired
-	private ClienteRepository clienteRepository;
-	
-	@Autowired
-	private PedidoRepository pedidoRepository;
-	
-	@Autowired
-	private ClienteMapper clienteMapper;
+	private ClienteService clienteService;
 	
 	@GetMapping
 	public List<ClienteDTO> listar(@RequestParam(required = false) String nome) {
-		List<Cliente> clientes = null;
-		if (nome == null) {
-			clientes = clienteRepository.findAll();
-		} else {
-			clientes = clienteRepository.findAllByNome(nome);
-		}
-		return clienteMapper.toDto(clientes);
+		return clienteService.obtemTodos(nome);
 	}
 	
 	@PostMapping
-	@Transactional
 	public ResponseEntity<ClienteDTO> cadastrar(@RequestBody @Valid ClienteDTO clienteDto, UriComponentsBuilder uriBuilder) {
-		Cliente cliente = clienteMapper.toEntity(clienteDto);
-		Optional<Cliente> optional = clienteRepository.findByCpf(cliente.getCpf());
-		if(!optional.isPresent()) {
-			cliente = clienteRepository.save(cliente);
-			URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
-			return ResponseEntity.created(uri).body(clienteMapper.toDto(cliente));
+		ClienteDTO cliente;
+		try {
+			cliente = clienteService.salva(clienteDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("CLIENTE", e.getCode(), e.getMessage()))
+					.body(clienteDto);
 		}
-		
-		return ResponseEntity.badRequest()
-				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CPF_DUPLICADO", "CPF já utilizado por outro cliente"))
-				.body(clienteDto);
+		URI uri = uriBuilder.path("/clientes/{id}").buildAndExpand(cliente.getId()).toUri();
+		return ResponseEntity.created(uri).body(cliente);
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ClienteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteDTO clienteDto) {
-		Optional<Cliente> optional = clienteRepository.findById(id);
-		if (optional.isPresent()) {
-			
-			if(!optional.get().getCpf().equals(clienteDto.getCpf())) {
-				Optional<Cliente> optionalClienteCpf = clienteRepository.findByCpf(clienteDto.getCpf());
-				if(optionalClienteCpf.isPresent()) {
-					return ResponseEntity.badRequest()
-							.headers(HeaderUtil.createFailureAlert("CLIENTE", "CPF_DUPLICADO", "CPF já utilizado por outro cliente"))
-							.body(clienteDto);
-				}
-			}
-			
-			Cliente cliente = clienteRepository.save(clienteMapper.toEntity(clienteDto));
-			return ResponseEntity.ok(clienteMapper.toDto(cliente));
+		ClienteDTO cliente;
+		try {
+			clienteDto.setId(id);
+			cliente = clienteService.salva(clienteDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("CLIENTE", e.getCode(), e.getMessage()))
+					.body(clienteDto);
 		}
-		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado"))
-				.build();
+			
+		return ResponseEntity.ok(cliente);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ClienteDTO> obter(@PathVariable Long id) {
-		Optional<Cliente> cliente = clienteRepository.findById(id);
-		if (cliente.isPresent()) {
-			return ResponseEntity.ok(clienteMapper.toDto(cliente.get()));
+		ClienteDTO cliente = clienteService.obtemPeloId(id);
+		if (cliente != null) {
+			return ResponseEntity.ok(cliente);
 		}
 		
 		return ResponseEntity.notFound()
@@ -107,24 +82,15 @@ public class ClienteController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ClienteDTO> remover(@PathVariable Long id) {
-		Optional<Cliente> optional = clienteRepository.findById(id);
-		if (optional.isPresent()) {
-			
-			boolean clientePossuiPedido = pedidoRepository.existsByClienteId(id);
-			
-			if(clientePossuiPedido) {
-				return ResponseEntity.badRequest()
-						.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_POSSUI_PEDIDO", "Cliente não pode ser removido, pois possui pedidos efetuados"))
-						.build();
-			}
-
-			clienteRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remover(@PathVariable Long id) {
+		try {
+			clienteService.remove(id);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("CLIENTE", e.getCode(), e.getMessage()))
+					.body(null);
 		}
 		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("CLIENTE", "CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado"))
-				.build();
+		return ResponseEntity.noContent().build();
 	}
 }

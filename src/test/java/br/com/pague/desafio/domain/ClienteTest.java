@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.pague.desafio.builder.ClienteBuilder;
+import br.com.pague.desafio.service.dto.ClienteDTO;
 
 @RunWith(SpringRunner.class)
 public class ClienteTest {
@@ -29,36 +30,36 @@ public class ClienteTest {
 	}
 
 	@Test
-	public void customerNullNameConstraintViolationTest() {
+	public void verificaClienteComNomeNulo() {
 		//cenario
-		Cliente cliente = ClienteBuilder.umCliente().comNome(null).constroi();
+		ClienteDTO cliente = ClienteBuilder.umCliente().comNome(null).constroi();
 		
 		//acao
-		Set<ConstraintViolation<Cliente>> violations = validator.validate(cliente);
+		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);
         
 		//verificacao
 		assertFalse(violations.isEmpty());		
 	}
 	
 	@Test
-	public void customerEmptyNameConstraintViolationTest() {
+	public void verificaClienteComCpfNulo() {
 		//cenario
-		Cliente cliente = ClienteBuilder.umCliente().comNome("   ").constroi();
+		ClienteDTO cliente = ClienteBuilder.umCliente().comCpf(null).constroi();
 		
 		//acao
-		Set<ConstraintViolation<Cliente>> violations = validator.validate(cliente);
+		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);
         
 		//verificacao
 		assertFalse(violations.isEmpty());		
 	}
 	
 	@Test
-	public void customerNoConstraintViolationTest() {
+	public void verificaClienteSemProblemasDeValidacao() {
 		//cenario
-		Cliente cliente = ClienteBuilder.umCliente().constroi();
+		ClienteDTO cliente = ClienteBuilder.umCliente().constroi();
 		
 		//acao
-		Set<ConstraintViolation<Cliente>> violations = validator.validate(cliente);
+		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);
         
 		//verificacao
 		assertTrue(violations.isEmpty());		

@@ -1,10 +1,10 @@
-package br.com.pague.desafio.controller.mapper;
+package br.com.pague.desafio.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import br.com.pague.desafio.controller.dto.PedidoDTO;
 import br.com.pague.desafio.domain.Pedido;
+import br.com.pague.desafio.service.dto.PedidoDTO;
 
 @Mapper(componentModel = "spring", uses = {ClienteMapper.class})
 public interface PedidoMapper extends EntityMapper <PedidoDTO, Pedido> {

@@ -1,12 +1,12 @@
-package br.com.pague.desafio.controller.dto;
+package br.com.pague.desafio.service.dto;
 
 import java.math.BigDecimal;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import br.com.pague.desafio.controller.validation.PedidoValido;
-import br.com.pague.desafio.controller.validation.ProdutoValido;
+import br.com.pague.desafio.service.dto.validation.PedidoValido;
+import br.com.pague.desafio.service.dto.validation.ProdutoValido;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,27 +1,25 @@
-package br.com.pague.desafio.controller.dto;
+package br.com.pague.desafio.service.dto;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.br.CPF;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ClienteDTO {
+@AllArgsConstructor
+public class ProdutoDTO {
 	private Long id;
 	
 	@NotNull @NotEmpty @Size(min=5, max=100)
 	private String nome;
 	
-	@NotNull @NotEmpty @Size(min=11, max=11) @CPF
-	private String cpf;
-	
-	@NotNull
-	private Date dataNascimento;
+	@NotNull @Min(value = 0)
+	private BigDecimal precoSugerido;
 }

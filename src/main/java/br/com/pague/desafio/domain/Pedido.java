@@ -32,6 +32,6 @@ public class Pedido {
 	@OneToMany(mappedBy = "pedido", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
 	private List<ItemPedido> itemPedidos = new ArrayList<>();
 	
-	@Column(precision = 10, scale = 2)
+	@Column(name = "valor_pedido", precision = 10, scale = 2)
 	private BigDecimal valorPedido;	
 }

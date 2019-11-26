@@ -27,9 +27,9 @@ public class ItemPedido {
 	@ManyToOne(optional=false)
 	private Produto produto;
 	
-	@Column(precision = 10, scale = 2)
+	@Column(name = "preco", precision = 10, scale = 2)
 	private BigDecimal preco;
 	
-	@Column(precision = 10, scale = 2)
+	@Column(name = "quantidade", precision = 10, scale = 2)
 	private BigDecimal quantidade;
 }

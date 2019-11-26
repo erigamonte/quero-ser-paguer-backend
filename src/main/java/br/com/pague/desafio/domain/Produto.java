@@ -20,9 +20,9 @@ public class Produto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(length = 100, nullable = false)
+	@Column(name = "nome", length = 100, nullable = false)
 	private String nome;
 	
-	@Column(precision = 10, scale = 2)
+	@Column(name = "preco_sugerido", precision = 10, scale = 2)
 	private BigDecimal precoSugerido;
 }

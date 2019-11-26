@@ -29,10 +29,10 @@ public class Usuario implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(length = 100, nullable = false)
+	@Column(name = "email", length = 100, nullable = false)
 	private String email;
 	
-	@Column(length = 100, nullable = false)
+	@Column(name = "senha", length = 100, nullable = false)
 	private String senha;
 
 	@ManyToMany(fetch = FetchType.EAGER)

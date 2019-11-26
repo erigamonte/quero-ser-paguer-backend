@@ -1,4 +1,4 @@
-package br.com.pague.desafio.controller.mapper;
+package br.com.pague.desafio.service.mapper;
 
 import java.util.List;
 

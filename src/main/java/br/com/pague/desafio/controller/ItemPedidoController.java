@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.pague.desafio.controller.dto.ItemPedidoDTO;
-import br.com.pague.desafio.controller.mapper.ItemPedidoMapper;
 import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.domain.ItemPedido;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
 import br.com.pague.desafio.repository.ProdutoRepository;
+import br.com.pague.desafio.service.dto.ItemPedidoDTO;
+import br.com.pague.desafio.service.mapper.ItemPedidoMapper;
 import io.swagger.annotations.Api;
 
 @RestController

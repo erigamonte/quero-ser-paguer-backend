@@ -8,7 +8,7 @@
             <column name="cpf" type="VARCHAR(11)">
                 <constraints nullable="false"/>
             </column>
-            <column name="dataNascimento" type="date"/>
+            <column name="data_nascimento" type="date"/>
             <column name="nome" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
@@ -34,7 +34,7 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PedidoPK"/>
             </column>
-            <column name="valorPedido" type="DECIMAL(10, 2)"/>
+            <column name="valor_pedido" type="DECIMAL(10, 2)"/>
             <column name="cliente_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -59,7 +59,7 @@
             <column name="nome" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="precoSugerido" type="DECIMAL(10, 2)"/>
+            <column name="preco_sugerido" type="DECIMAL(10, 2)"/>
         </createTable>
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574628092974-6">

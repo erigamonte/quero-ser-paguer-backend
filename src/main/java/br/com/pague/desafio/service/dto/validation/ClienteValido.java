@@ -1,4 +1,4 @@
-package br.com.pague.desafio.controller.validation;
+package br.com.pague.desafio.service.dto.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Constraint(validatedBy = PedidoValidator.class)
+@Constraint(validatedBy = ClienteValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface PedidoValido {
+public @interface ClienteValido {
 
-	public String message() default "Não Existe Pedido com ID informado!";
+	public String message() default "Não Existe Cliente com ID informado!";
 	
 	public Class<?>[] groups() default {};
 	

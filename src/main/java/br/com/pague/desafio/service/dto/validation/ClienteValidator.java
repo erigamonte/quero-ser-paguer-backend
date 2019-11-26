@@ -1,4 +1,4 @@
-package br.com.pague.desafio.controller.validation;
+package br.com.pague.desafio.service.dto.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

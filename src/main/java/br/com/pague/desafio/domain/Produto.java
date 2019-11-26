@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name="produto")
 public class Produto {
 	
 	@Id

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name="item_pedido")
 public class ItemPedido {
 	
 	@Id

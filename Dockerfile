@@ -1,3 +1,5 @@
-FROM tomcat:9.0
-COPY target/desafio.war /usr/local/tomcat/webapps/desafio.war
-RUN sh -c "touch /usr/local/tomcat/webapps/desafio.war"
+FROM openjdk:8-jdk-alpine
+COPY ./target/desafio.war /usr/src/desafio/
+WORKDIR /usr/src/desafio
+EXPOSE 8080
+CMD ["java", "-jar", "desafio.war"]

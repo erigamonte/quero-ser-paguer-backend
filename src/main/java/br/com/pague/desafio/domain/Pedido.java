@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity
+@Entity(name="pedido")
 public class Pedido {
 
 	@Id

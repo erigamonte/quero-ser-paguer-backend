@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,7 @@ public class Usuario implements UserDetails {
 	private String senha;
 
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "usuario_perfil")
 	private List<Perfil> perfis = new ArrayList<>();
 
 	@Override

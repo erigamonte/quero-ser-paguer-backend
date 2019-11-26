@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import br.com.pague.desafio.builder.ClienteBuilder;
+import br.com.pague.desafio.builder.ClienteDTOBuilder;
 import br.com.pague.desafio.service.dto.ClienteDTO;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +32,7 @@ public class ClienteTest {
 	@Test
 	public void verificaClienteComNomeNulo() {
 		//cenario
-		ClienteDTO cliente = ClienteBuilder.umCliente().comNome(null).constroi();
+		ClienteDTO cliente = ClienteDTOBuilder.umClienteDTO().comNome(null).constroi();
 		
 		//acao
 		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);
@@ -44,7 +44,7 @@ public class ClienteTest {
 	@Test
 	public void verificaClienteComCpfNulo() {
 		//cenario
-		ClienteDTO cliente = ClienteBuilder.umCliente().comCpf(null).constroi();
+		ClienteDTO cliente = ClienteDTOBuilder.umClienteDTO().comCpf(null).constroi();
 		
 		//acao
 		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);
@@ -56,7 +56,7 @@ public class ClienteTest {
 	@Test
 	public void verificaClienteSemProblemasDeValidacao() {
 		//cenario
-		ClienteDTO cliente = ClienteBuilder.umCliente().constroi();
+		ClienteDTO cliente = ClienteDTOBuilder.umClienteDTO().constroi();
 		
 		//acao
 		Set<ConstraintViolation<ClienteDTO>> violations = validator.validate(cliente);

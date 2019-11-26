@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.pague.desafio.config.security.PerfilConstantes;
 import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.repository.ItemPedidoRepository;
@@ -61,9 +63,10 @@ public class ProdutoController {
 	@PostMapping
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
+	@Secured({PerfilConstantes.ADMIN})
 	public ResponseEntity<ProdutoDTO> cadastrar(@RequestBody @Valid ProdutoDTO produtoDto, UriComponentsBuilder uriBuilder) {
 		Produto produto = produtoMapper.toEntity(produtoDto);
-		produtoRepository.save(produto);
+		produto = produtoRepository.save(produto);
 		URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produto.getId()).toUri();
 		return ResponseEntity.created(uri).body(produtoMapper.toDto(produto));
 	}
@@ -99,6 +102,7 @@ public class ProdutoController {
 	@DeleteMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
+	@Secured({PerfilConstantes.ADMIN})
 	public ResponseEntity<ProdutoDTO> remover(@PathVariable Long id) {
 		Optional<Produto> optional = produtoRepository.findById(id);
 		if (optional.isPresent()) {

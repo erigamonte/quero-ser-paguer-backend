@@ -45,11 +45,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-//		.antMatchers(HttpMethod.GET, "/produtos").permitAll()
-//		.antMatchers(HttpMethod.GET, "/produtos/*").permitAll()
-//		.antMatchers(HttpMethod.POST, "/auth").permitAll()
-//		.anyRequest().authenticated()
-		.antMatchers("/**").permitAll()
+		.antMatchers(HttpMethod.GET, "/produtos").permitAll()
+		.antMatchers(HttpMethod.GET, "/produtos/*").permitAll()
+		.antMatchers(HttpMethod.POST, "/auth").permitAll()
+		.anyRequest().authenticated()
+//		.antMatchers("/**").permitAll()
 		.and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
@@ -61,6 +61,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
 	
+//	public static void main(String[] args) {
+//		System.out.println(new BCryptPasswordEncoder().encode("123456"));
+//	}
+//	
 }
 
 

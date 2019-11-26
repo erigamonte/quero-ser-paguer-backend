@@ -54,8 +54,9 @@ public class ItemPedidoController {
 	public ResponseEntity<ItemPedidoDTO> cadastrar(@RequestBody @Valid ItemPedidoDTO itemPedidoDto, UriComponentsBuilder uriBuilder) {
 		Produto produto = produtoRepository.getOne(itemPedidoDto.getProdutoId());
 		itemPedidoDto.setPreco(produto.getPrecoSugerido());
-		itemPedidoRepository.save(itemPedidoMapper.toEntity(itemPedidoDto));
-		URI uri = uriBuilder.path("/item-pedidos/{id}").buildAndExpand(itemPedidoDto.getId()).toUri();
+		ItemPedido itemPedido = itemPedidoMapper.toEntity(itemPedidoDto);
+		itemPedido = itemPedidoRepository.save(itemPedido);
+		URI uri = uriBuilder.path("/item-pedidos/{id}").buildAndExpand(itemPedido.getId()).toUri();
 		return ResponseEntity.created(uri).body(itemPedidoDto);
 	}
 	

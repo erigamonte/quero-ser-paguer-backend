@@ -90,7 +90,7 @@
         </createTable>
         
         <loadData encoding="UTF-8"
-			file="db/usuarios_perfis.csv" separator=";" tableName="usuario_perfil">
+			file="db/usuarios_perfil.csv" separator=";" tableName="usuario_perfil">
 		</loadData>
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574787224510-8">

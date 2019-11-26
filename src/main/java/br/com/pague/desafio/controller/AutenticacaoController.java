@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.pague.desafio.config.security.TokenService;
 import br.com.pague.desafio.config.security.dto.TokenDTO;
 import br.com.pague.desafio.config.security.form.LoginForm;
+import br.com.pague.desafio.controller.util.HeaderUtil;
 import io.swagger.annotations.Api;
 
 @RestController
@@ -38,7 +39,9 @@ public class AutenticacaoController {
 			String token = tokenService.gerarToken(authentication);
 			return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
 		} catch (AuthenticationException e) {
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("USUARIO", "CREDENCIAIS_INVALIDAS", "Usuario ou senha errada"))
+					.build();
 		}
 	}
 	

@@ -46,10 +46,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
-        <loadData encoding="UTF-8"
-			file="db/perfils.csv" separator=";" tableName="perfil">
-		</loadData>
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574787224510-5">
         <createTable tableName="produto">
@@ -74,10 +70,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
-        <loadData encoding="UTF-8"
-			file="db/usuarios.csv" separator=";" tableName="usuario">
-		</loadData>
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574787224510-7">
         <createTable tableName="usuario_perfil">
@@ -88,10 +80,6 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        
-        <loadData encoding="UTF-8"
-			file="db/usuarios_perfil.csv" separator=";" tableName="usuario_perfil">
-		</loadData>
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574787224510-8">
         <addPrimaryKey columnNames="nome" constraintName="perfilPK" tableName="perfil"/>
@@ -113,5 +101,28 @@
     </changeSet>
     <changeSet author="Rigamonte (generated)" id="1574787224510-14">
         <addForeignKeyConstraint baseColumnNames="produto_id" baseTableName="item_pedido" constraintName="FK_r5pmilksmhlmh5mccbvplg8b7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="produto"/>
+    </changeSet>
+	<changeSet author="Rigamonte (generated)" id="1574787224510-15">
+        <loadData encoding="UTF-8"
+			file="db/perfils.csv" separator=";" tableName="perfil">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/usuarios.csv" separator=";" tableName="usuario">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/usuarios_perfil.csv" separator=";" tableName="usuario_perfil">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/produtos.csv" separator=";" tableName="produto">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/clientes.csv" separator=";" tableName="cliente">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/pedidos.csv" separator=";" tableName="pedido">
+		</loadData>
+		<loadData encoding="UTF-8"
+			file="db/itens_pedido.csv" separator=";" tableName="item_pedido">
+		</loadData>
     </changeSet>
 </databaseChangeLog>

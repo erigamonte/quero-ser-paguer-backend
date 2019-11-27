@@ -23,6 +23,6 @@ public class Produto {
 	@Column(name = "nome", length = 100, nullable = false)
 	private String nome;
 	
-	@Column(name = "preco_sugerido", precision = 10, scale = 2)
+	@Column(name = "preco_sugerido", precision = 10, scale = 2, nullable = false)
 	private BigDecimal precoSugerido;
 }

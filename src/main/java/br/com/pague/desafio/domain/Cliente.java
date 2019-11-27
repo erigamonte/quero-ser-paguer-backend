@@ -31,7 +31,7 @@ public class Cliente {
 	private String cpf;
 	
 	@Temporal(TemporalType.DATE)
-	@Column(name = "data_nascimento")
+	@Column(name = "data_nascimento", nullable = false)
 	private Date dataNascimento;
 	
 	@OneToMany(mappedBy = "cliente")

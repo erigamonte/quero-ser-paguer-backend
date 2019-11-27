@@ -32,6 +32,9 @@ public class Pedido {
 	@OneToMany(mappedBy = "pedido", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
 	private List<ItemPedido> itemPedidos = new ArrayList<>();
 	
-	@Column(name = "valor_pedido", precision = 10, scale = 2)
-	private BigDecimal valorPedido;	
+	public BigDecimal getValorPedido() {
+		BigDecimal total = BigDecimal.ZERO;
+		total = itemPedidos.stream().map(item-> item.getPreco().multiply(item.getQuantidade())).reduce(BigDecimal.ZERO,BigDecimal::add);
+		return total;
+	}
 }

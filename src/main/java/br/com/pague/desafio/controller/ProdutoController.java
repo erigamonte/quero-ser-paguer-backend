@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.pague.desafio.config.security.PerfilConstantes;
+import br.com.pague.desafio.controller.error.DesafioException;
 import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.domain.Produto;
-import br.com.pague.desafio.repository.ItemPedidoRepository;
-import br.com.pague.desafio.repository.ProdutoRepository;
+import br.com.pague.desafio.service.ProdutoService;
+import br.com.pague.desafio.service.dto.ClienteDTO;
 import br.com.pague.desafio.service.dto.ProdutoDTO;
 import br.com.pague.desafio.service.mapper.ProdutoMapper;
 import io.swagger.annotations.Api;
@@ -38,26 +39,12 @@ import io.swagger.annotations.Api;
 public class ProdutoController {
 	
 	@Autowired
-	private ProdutoRepository produtoRepository;
-
-	@Autowired
-	private ItemPedidoRepository itemPedidoRepository;
-	
-	@Autowired
-	private ProdutoMapper produtoMapper;
+	private ProdutoService produtoService;
 	
 	@GetMapping
 	@Cacheable(value = "listaProdutos")
 	public List<ProdutoDTO> listar(@RequestParam(required = false) String nome) {
-		List<Produto> produtos = null;
-		if (nome == null) {
-			produtos = produtoRepository.findAll();
-		} else {
-			produtos = produtoRepository.findByNome(nome);
-		}
-		
-		List<ProdutoDTO> produtosDto = produtoMapper.toDto(produtos);
-		return produtosDto;
+		return produtoService.obtemTodos(nome);
 	}
 	
 	@PostMapping
@@ -65,33 +52,41 @@ public class ProdutoController {
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	@Secured({PerfilConstantes.ADMIN})
 	public ResponseEntity<ProdutoDTO> cadastrar(@RequestBody @Valid ProdutoDTO produtoDto, UriComponentsBuilder uriBuilder) {
-		Produto produto = produtoMapper.toEntity(produtoDto);
-		produto = produtoRepository.save(produto);
+		ProdutoDTO produto;
+		try {
+			produto = produtoService.salva(produtoDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("PRODUTO", e.getCode(), e.getMessage()))
+					.body(produtoDto);
+		}
 		URI uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produto.getId()).toUri();
-		return ResponseEntity.created(uri).body(produtoMapper.toDto(produto));
+		return ResponseEntity.created(uri).body(produto);
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produtoDto) {
-		Optional<Produto> optional = produtoRepository.findById(id);
-		if (optional.isPresent()) {
-			Produto produto = produtoRepository.save(produtoMapper.toEntity(produtoDto));
-			return ResponseEntity.ok(produtoMapper.toDto(produto));
+		ProdutoDTO produto;
+		try {
+			produtoDto.setId(id);
+			produto = produtoService.salva(produtoDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("PRODUTO", e.getCode(), e.getMessage()))
+					.body(produtoDto);
 		}
-		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado"))
-				.build();
+			
+		return ResponseEntity.ok(produto);
 	}
 	
 	@GetMapping("/{id}")
 	@Cacheable(value = "listaProdutos")
 	public ResponseEntity<ProdutoDTO> obter(@PathVariable Long id) {
-		Optional<Produto> produto = produtoRepository.findById(id);
-		if (produto.isPresent()) {
-			return ResponseEntity.ok(produtoMapper.toDto(produto.get()));
+		ProdutoDTO produto = produtoService.obtemPeloId(id);
+		if (produto != null) {
+			return ResponseEntity.ok(produto);
 		}
 		
 		return ResponseEntity.notFound()
@@ -103,24 +98,15 @@ public class ProdutoController {
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	@Secured({PerfilConstantes.ADMIN})
-	public ResponseEntity<ProdutoDTO> remover(@PathVariable Long id) {
-		Optional<Produto> optional = produtoRepository.findById(id);
-		if (optional.isPresent()) {
-			
-			boolean produtoPossuiPedido = itemPedidoRepository.existsByProdutoId(id);
-			
-			if(produtoPossuiPedido) {
-				return ResponseEntity.badRequest()
-						.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_POSSUI_PEDIDO", "Produto não pode ser removido, pois possui pedidos efetuados"))
-						.build();
-			}
-			
-			produtoRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remover(@PathVariable Long id) {
+		try {
+			produtoService.remove(id);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("PRODUTO", e.getCode(), e.getMessage()))
+					.body(null);
 		}
 		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("PRODUTO", "PRODUTO_NAO_ENCONTRADO", "Produto não encontrado"))
-				.build();
+		return ResponseEntity.noContent().build();
 	}
 }

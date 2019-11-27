@@ -8,5 +8,5 @@ import br.com.pague.desafio.domain.Produto;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-	List<Produto> findByNome(String nome);
+	List<Produto> findAllByNome(String nome);
 }

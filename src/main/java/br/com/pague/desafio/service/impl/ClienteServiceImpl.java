@@ -99,9 +99,10 @@ public class ClienteServiceImpl implements ClienteService{
 			}
 
 			clienteRepository.deleteById(id);
+		} else {
+			throw new DesafioException("CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado");
 		}
 		
-		throw new DesafioException("CLIENTE_NAO_ENCONTRADO", "Cliente não encontrado");
 	}
 
 }

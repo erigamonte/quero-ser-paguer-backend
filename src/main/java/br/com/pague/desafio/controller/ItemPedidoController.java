@@ -2,7 +2,6 @@ package br.com.pague.desafio.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -20,13 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.pague.desafio.controller.error.DesafioException;
 import br.com.pague.desafio.controller.util.HeaderUtil;
-import br.com.pague.desafio.domain.ItemPedido;
-import br.com.pague.desafio.domain.Produto;
-import br.com.pague.desafio.repository.ItemPedidoRepository;
-import br.com.pague.desafio.repository.ProdutoRepository;
+import br.com.pague.desafio.service.ItemPedidoService;
 import br.com.pague.desafio.service.dto.ItemPedidoDTO;
-import br.com.pague.desafio.service.mapper.ItemPedidoMapper;
 import io.swagger.annotations.Api;
 
 @RestController
@@ -35,68 +31,67 @@ import io.swagger.annotations.Api;
 public class ItemPedidoController {
 	
 	@Autowired
-	private ItemPedidoRepository itemPedidoRepository;
-
-	@Autowired
-	private ProdutoRepository produtoRepository;
-	
-	@Autowired
-	private ItemPedidoMapper itemPedidoMapper;
+	private ItemPedidoService itemPedidoService;
 	
 	@GetMapping
 	public List<ItemPedidoDTO> listar(@RequestParam(required = true) Long pedidoId) {
-		List<ItemPedido> itemPedidos = itemPedidoRepository.findAllByPedidoId(pedidoId);
-		return itemPedidoMapper.toDto(itemPedidos);
+		return itemPedidoService.obtemTodos(pedidoId);
 	}
 	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<ItemPedidoDTO> cadastrar(@RequestBody @Valid ItemPedidoDTO itemPedidoDto, UriComponentsBuilder uriBuilder) {
-		Produto produto = produtoRepository.getOne(itemPedidoDto.getProdutoId());
-		itemPedidoDto.setPreco(produto.getPrecoSugerido());
-		ItemPedido itemPedido = itemPedidoMapper.toEntity(itemPedidoDto);
-		itemPedido = itemPedidoRepository.save(itemPedido);
-		URI uri = uriBuilder.path("/item-pedidos/{id}").buildAndExpand(itemPedido.getId()).toUri();
-		return ResponseEntity.created(uri).body(itemPedidoDto);
+		ItemPedidoDTO itemPedido;
+		try {
+			itemPedido = itemPedidoService.salva(itemPedidoDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", e.getCode(), e.getMessage()))
+					.body(itemPedidoDto);
+		}
+		URI uri = uriBuilder.path("/itemPedidos/{id}").buildAndExpand(itemPedido.getId()).toUri();
+		return ResponseEntity.created(uri).body(itemPedido);
 	}
 	
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<ItemPedidoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ItemPedidoDTO itemPedidoDto) {
-		Optional<ItemPedido> optional = itemPedidoRepository.findById(id);
-		if (optional.isPresent()) {
-			ItemPedido itemPedido = itemPedidoRepository.save(itemPedidoMapper.toEntity(itemPedidoDto));
-			return ResponseEntity.ok(itemPedidoMapper.toDto(itemPedido));
+		ItemPedidoDTO itemPedido;
+		try {
+			itemPedidoDto.setId(id);
+			itemPedido = itemPedidoService.salva(itemPedidoDto);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", e.getCode(), e.getMessage()))
+					.body(itemPedidoDto);
 		}
-		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
-				.build();
+			
+		return ResponseEntity.ok(itemPedido);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ItemPedidoDTO> obter(@PathVariable Long id) {
-		Optional<ItemPedido> itemPedido = itemPedidoRepository.findById(id);
-		if (itemPedido.isPresent()) {
-			return ResponseEntity.ok(itemPedidoMapper.toDto(itemPedido.get()));
+		ItemPedidoDTO itemPedido = itemPedidoService.obtemPeloId(id);
+		if (itemPedido != null) {
+			return ResponseEntity.ok(itemPedido);
 		}
 		
 		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
+				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item de Pedido não encontrado"))
 				.build();
 	}
 	
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ItemPedidoDTO> remover(@PathVariable Long id) {
-		Optional<ItemPedido> optional = itemPedidoRepository.findById(id);
-		if (optional.isPresent()) {
-			itemPedidoRepository.deleteById(id);
-			return ResponseEntity.ok().build();
+	public ResponseEntity<?> remover(@PathVariable Long id) {
+		try {
+			itemPedidoService.remove(id);
+		} catch (DesafioException e) {
+			return ResponseEntity.badRequest()
+					.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", e.getCode(), e.getMessage()))
+					.body(null);
 		}
 		
-		return ResponseEntity.notFound()
-				.headers(HeaderUtil.createFailureAlert("ITEM_PEDIDO", "ITEM_PEDIDO_NAO_ENCONTRADO", "Item Pedido não encontrado"))
-				.build();
+		return ResponseEntity.noContent().build();
 	}
 }

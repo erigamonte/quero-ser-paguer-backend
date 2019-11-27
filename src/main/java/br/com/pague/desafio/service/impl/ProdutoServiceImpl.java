@@ -87,9 +87,9 @@ public class ProdutoServiceImpl implements ProdutoService{
 			}
 
 			produtoRepository.deleteById(id);
+		} else {
+			throw new DesafioException("PRODUTO_NAO_ENCONTRADO", "Produto não encontrado");
 		}
-		
-		throw new DesafioException("PRODUTO_NAO_ENCONTRADO", "Produto não encontrado");
 	}
 
 }

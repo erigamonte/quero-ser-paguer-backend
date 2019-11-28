@@ -2,7 +2,6 @@ package br.com.pague.desafio.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -26,12 +25,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.pague.desafio.config.security.PerfilConstantes;
 import br.com.pague.desafio.controller.error.DesafioException;
 import br.com.pague.desafio.controller.util.HeaderUtil;
-import br.com.pague.desafio.domain.Produto;
 import br.com.pague.desafio.service.ProdutoService;
-import br.com.pague.desafio.service.dto.ClienteDTO;
 import br.com.pague.desafio.service.dto.ProdutoDTO;
-import br.com.pague.desafio.service.mapper.ProdutoMapper;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/produtos")
@@ -43,6 +40,7 @@ public class ProdutoController {
 	
 	@GetMapping
 	@Cacheable(value = "listaProdutos")
+	@ApiOperation(value = "Buscar Produtos", notes = "Buscar Produtos")
 	public List<ProdutoDTO> listar(@RequestParam(required = false) String nome) {
 		return produtoService.obtemTodos(nome);
 	}
@@ -51,6 +49,7 @@ public class ProdutoController {
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	@Secured({PerfilConstantes.ADMIN})
+	@ApiOperation(value = "Cadastrar Produto", notes = "Cadastrar Produto")
 	public ResponseEntity<ProdutoDTO> cadastrar(@RequestBody @Valid ProdutoDTO produtoDto, UriComponentsBuilder uriBuilder) {
 		ProdutoDTO produto;
 		try {
@@ -67,6 +66,7 @@ public class ProdutoController {
 	@PutMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
+	@ApiOperation(value = "Atualizar Produto", notes = "Atualizar Produto")
 	public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produtoDto) {
 		ProdutoDTO produto;
 		try {
@@ -83,6 +83,7 @@ public class ProdutoController {
 	
 	@GetMapping("/{id}")
 	@Cacheable(value = "listaProdutos")
+	@ApiOperation(value = "Detalhar Produto", notes = "Detalhar Produto")
 	public ResponseEntity<ProdutoDTO> obter(@PathVariable Long id) {
 		ProdutoDTO produto = produtoService.obtemPeloId(id);
 		if (produto != null) {
@@ -98,6 +99,7 @@ public class ProdutoController {
 	@Transactional
 	@CacheEvict(value = "listaProdutos", allEntries = true)
 	@Secured({PerfilConstantes.ADMIN})
+	@ApiOperation(value = "Remover Produto", notes = "Remover Produto")
 	public ResponseEntity<?> remover(@PathVariable Long id) {
 		try {
 			produtoService.remove(id);

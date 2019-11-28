@@ -18,6 +18,7 @@ import br.com.pague.desafio.config.security.dto.TokenDTO;
 import br.com.pague.desafio.config.security.form.LoginForm;
 import br.com.pague.desafio.controller.util.HeaderUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/auth")
@@ -31,6 +32,7 @@ public class AutenticacaoController {
 	private TokenService tokenService;
 
 	@PostMapping
+	@ApiOperation(value = "Realizar Autenticação", notes = "Realizar Autenticação")
 	public ResponseEntity<TokenDTO> autenticar(@RequestBody @Valid LoginForm form) {
 		UsernamePasswordAuthenticationToken dadosLogin = form.converter();
 		

@@ -24,6 +24,7 @@ import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.service.ClienteService;
 import br.com.pague.desafio.service.dto.ClienteDTO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/clientes")
@@ -34,11 +35,13 @@ public class ClienteController {
 	private ClienteService clienteService;
 	
 	@GetMapping
+	@ApiOperation(value = "Buscar Clientes", notes = "Buscar Clientes")
 	public List<ClienteDTO> listar(@RequestParam(required = false) String nome) {
 		return clienteService.obtemTodos(nome);
 	}
 	
 	@PostMapping
+	@ApiOperation(value = "Criar Cliente", notes = "Criar Cliente")
 	public ResponseEntity<ClienteDTO> cadastrar(@RequestBody @Valid ClienteDTO clienteDto, UriComponentsBuilder uriBuilder) {
 		ClienteDTO cliente;
 		try {
@@ -54,6 +57,7 @@ public class ClienteController {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Atualizar Cliente", notes = "Atualizar Cliente")
 	public ResponseEntity<ClienteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteDTO clienteDto) {
 		ClienteDTO cliente;
 		try {
@@ -69,6 +73,7 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation(value = "Detalhar Cliente", notes = "Detalhar Cliente")
 	public ResponseEntity<ClienteDTO> obter(@PathVariable Long id) {
 		ClienteDTO cliente = clienteService.obtemPeloId(id);
 		if (cliente != null) {
@@ -82,6 +87,7 @@ public class ClienteController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Remover Cliente", notes = "Remover Cliente")
 	public ResponseEntity<?> remover(@PathVariable Long id) {
 		try {
 			clienteService.remove(id);

@@ -24,6 +24,7 @@ import br.com.pague.desafio.controller.util.HeaderUtil;
 import br.com.pague.desafio.service.PedidoService;
 import br.com.pague.desafio.service.dto.PedidoDTO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -34,12 +35,14 @@ public class PedidoController {
 	private PedidoService pedidoService;
 
 	@GetMapping
+	@ApiOperation(value = "Buscar Pedidos", notes = "Buscar Pedidos")
 	public List<PedidoDTO> listar(@RequestParam(required = false) Long idCliente) {
 		return pedidoService.obtemTodos(idCliente);
 	}
 	
 	@PostMapping
 	@Transactional
+	@ApiOperation(value = "Cadastrar Pedido", notes = "Cadastrar Pedido")
 	public ResponseEntity<PedidoDTO> cadastrar(@RequestBody @Valid PedidoDTO pedidoDto, UriComponentsBuilder uriBuilder) {
 		PedidoDTO pedido;
 		try {
@@ -55,6 +58,7 @@ public class PedidoController {
 	
 	@PutMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Atualizar Pedido", notes = "Atualizar Pedido")
 	public ResponseEntity<PedidoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid PedidoDTO pedidoDto) {
 		PedidoDTO pedido;
 		try {
@@ -70,6 +74,7 @@ public class PedidoController {
 	}
 	
 	@GetMapping("/{id}")
+	@ApiOperation(value = "Detalhar Pedido", notes = "Detalhar Pedido")
 	public ResponseEntity<PedidoDTO> obter(@PathVariable Long id) {
 		PedidoDTO pedido = pedidoService.obtemPeloId(id);
 		if (pedido != null) {
@@ -83,6 +88,7 @@ public class PedidoController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@ApiOperation(value = "Remover Pedido", notes = "Remover Pedido")
 	public ResponseEntity<?> remover(@PathVariable Long id) {
 		try {
 			pedidoService.remove(id);
